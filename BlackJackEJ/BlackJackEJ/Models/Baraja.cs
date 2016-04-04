@@ -10,5 +10,13 @@ namespace BlackJackEJ.Models
     {
         [Key]
         public int Id { get; set; }
+
+        public static Baraja CrearNuevaBaraja(ApplicationDbContext db)
+        {
+            var baraja = new Baraja { };
+            db.Barajas.Add(baraja);
+            db.SaveChanges();
+            return baraja;
+        }
     }
 }

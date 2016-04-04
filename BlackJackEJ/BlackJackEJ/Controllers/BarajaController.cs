@@ -18,22 +18,28 @@ namespace BlackJackEJ.Controllers
         }
 
         // GET: api/Baraja/5
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            ApplicationDbContext db = new ApplicationDbContext();
+            var carta = CartaBaraja.ObtenerCarta(db, id);
+            return Ok(carta);
         }
 
         // POST: api/Baraja
         public IHttpActionResult Post([FromBody]string value)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-            var baraja = this.CrearNuevaBaraja(db);
+            var baraja = Baraja.CrearNuevaBaraja(db);
+            CartaBaraja.CrearNuevaCartaBaraja(db, baraja);
             return Ok(baraja);
         }
 
         // PUT: api/Baraja/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody]string value)
         {
+            ApplicationDbContext db = new ApplicationDbContext();
+            CartaBaraja.ReordenarCartaBaraja(db, id);
+            return Ok("Reordenado");
         }
 
         // DELETE: api/Baraja/5
@@ -41,12 +47,5 @@ namespace BlackJackEJ.Controllers
         {
         }
 
-        public Baraja CrearNuevaBaraja(ApplicationDbContext db)
-        {
-            var baraja = new Baraja { };
-            db.Barajas.Add(baraja);
-            db.SaveChanges();
-            return baraja;
-        }
      }
 }
