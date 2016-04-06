@@ -225,6 +225,7 @@
     <Compile Include="Models\Baraja.cs" />
     <Compile Include="Models\Carta.cs" />
     <Compile Include="Models\CartaBaraja.cs" />
+    <Compile Include="Models\DTO\ReporteGanados.cs" />
     <Compile Include="Models\Historial.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BlackJackEJ.Models;
+using BlackJackEJ.Models.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,9 +12,19 @@ namespace BlackJackEJ.Controllers
     public class JuegoController : ApiController
     {
         // GET: api/Juego
-        public IEnumerable<string> Get()
+        public IHttpActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            ApplicationDbContext db = new ApplicationDbContext();
+            var ganados = db.Historial.Where(x => x.Estado == 1).Count();
+            var perdidos = db.Historial.Where(x => x.Estado == 2).Count();
+            var empatados = db.Historial.Where(x => x.Estado == 3).Count();
+            var reporte = new ReporteGanados {
+                Ganados = ganados,
+                Perdidos = perdidos,
+                Empatados = empatados
+            };
+
+            return Ok(reporte);
         }
 
         // GET: api/Juego/5
@@ -57,14 +69,22 @@ namespace BlackJackEJ.Controllers
         }
 
         // POST: api/Juego
-        public void Post([FromBody]string value)
+        public IHttpActionResult Post([FromBody]int ganador)
         {
-
+            return null;
         }
 
         // PUT: api/Juego/5
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(int id, [FromBody]string value)
         {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var historial = new Historial
+            {
+                Estado = id
+            };
+            db.Historial.Add(historial);
+            db.SaveChanges();
+            return Ok(historial);
         }
 
         // DELETE: api/Juego/5

@@ -13,6 +13,7 @@ $(document).ready(function () {
     $(".dealer-title").hide();
     $(".loading").hide();
     $(".message-winner").hide();
+    get_reporte();
     
     $(".btn-play").on("click", function () {
         create_deck();
@@ -83,6 +84,7 @@ function get_card_dealer(deck_id, type) {
         $(".message-label").html("Gana el Dealer!!");
         $(".message-player").html("Jugador: " + player_points + " puntos");
         $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+        insert_ganador(2);
     } else if (player_points == dealer_points && type == 2) {
         $(".message-winner").show();
         $(".deck").hide();
@@ -91,6 +93,7 @@ function get_card_dealer(deck_id, type) {
         $(".message-label").html("Empates!!");
         $(".message-player").html("Jugador: " + player_points + " puntos");
         $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+        insert_ganador(3);
     } else {
         $.get("/api/baraja/" + deck_id, function (data) {
             $(".dealer").append('<img class="image-card" src="' + data.Imagen + '" />');
@@ -177,6 +180,7 @@ function get_ganador(player_points, dealer_points) {
             $(".message-label").html("Black Jack!! Gana el Jugador");
             $(".message-player").html("Jugador: " + player_points + " puntos");
             $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+            insert_ganador(1);
         } else if (data == 2 && time_play == 0) {
             $(".message-winner").show();
             $(".deck").hide();
@@ -185,6 +189,7 @@ function get_ganador(player_points, dealer_points) {
             $(".message-label").html("Black Jack!! Gana el Dealer");
             $(".message-player").html("Jugador: " + player_points + " puntos");
             $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+            insert_ganador(2);
         } else if (data == 1) {
             $(".message-winner").show();
             $(".deck").hide();
@@ -194,6 +199,7 @@ function get_ganador(player_points, dealer_points) {
             $(".message-label").html("Gana el Jugador!!");
             $(".message-player").html("Jugador: " + player_points + " puntos");
             $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+            insert_ganador(1);
         } else if (data == 2) {
             $(".message-winner").show();
             $(".deck").hide();
@@ -202,6 +208,7 @@ function get_ganador(player_points, dealer_points) {
             $(".message-label").html("Gana el Dealer!!");
             $(".message-player").html("Jugador: " + player_points + " puntos");
             $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+            insert_ganador(2);
         } else if(dealer_play > 0){
             get_card_dealer(deck_id, 2);
         }
@@ -220,4 +227,24 @@ function rotar_baraja() {
         $(".loaging-deck").hide();
     });
 
+}
+
+function get_reporte() {
+    $.ajax({
+        type: "GET",
+        url: "/api/juego/"
+    }).done(function (data) {
+        $(".reporte").html("Partidas ganadas: " + data.Ganados + " - " + "Partidas perdidas: " + data.Perdidos + " - " + "Partidas empatadas: " + data.Empatados);
+    });
+}
+
+function insert_ganador(ganador) {
+    $.ajax({
+        type: "PUT",
+        url: "/api/juego/" + ganador
+    }).done(function (data) {
+        get_reporte();
+    }).error(function (error) {
+        alert("error");
+    });
 }
