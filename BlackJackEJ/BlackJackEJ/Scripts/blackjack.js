@@ -2,6 +2,9 @@
 var player_points = 0;
 var dealer_points = 0;
 var time_play = 0;
+var dealer_play = 0;
+var cartas_dealer = [];
+var cartas_player = [];
 $(document).ready(function () {
     $(".deck").hide();
     $(".player").hide();
@@ -22,6 +25,7 @@ $(document).ready(function () {
 
     $(".btn-next").on("click", function () {
         time_play++;
+        dealer_play ++;
         get_card_dealer(deck_id, 2);
     });
 
@@ -106,11 +110,24 @@ function calc_points_player(numero, nombre) {
             get_ganador(player_points, dealer_points);
         }
         else {
+            cartas_player.push(nombre);
             player_points = player_points + numero;
             $(".player-points").html("Jugador:  " + player_points + " puntos");
             get_ganador(player_points, dealer_points);
         }
     } else {
+        var test_points_player = player_points + numero;
+        if (test_points_player > 21) {
+            for (index = 0; index < cartas_player.length; index++) {
+                if (cartas_player[index] == "AC" || cartas_player[index] == "AD" || cartas_player[index] == "AP" || cartas_player[index] == "AT") {
+                    player_points = player_points - 10;
+                    cartas_player.splice(index, 1);
+                    break;
+                }
+            }
+        }
+        
+        cartas_player.push(nombre);
         player_points = player_points + numero;
         $(".player-points").html("Jugador:  " + player_points + " puntos");
         get_ganador(player_points, dealer_points);
@@ -127,11 +144,23 @@ function calc_points_dealer(numero, nombre) {
             get_ganador(player_points, dealer_points);
         }
         else {
+            cartas_dealer.push(nombre);
             dealer_points = dealer_points + numero;
             $(".dealer-points").html("Dealer:  " + dealer_points + " puntos");
             get_ganador(player_points, dealer_points);
         }
     } else {
+        var test_points_dealer = dealer_points + numero;
+        if (test_points_dealer > 21) {
+            for (index = 0; index < cartas_dealer.length; index++) {
+                if (cartas_dealer[index] == "AC" || cartas_dealer[index] == "AD" || cartas_dealer[index] == "AP" || cartas_dealer[index] == "AT") {
+                    dealer_points = dealer_points - 10;
+                    cartas_dealer.splice(index, 1);
+                    break;
+                }
+            }
+        }
+        cartas_dealer.push(nombre);
         dealer_points = dealer_points + numero;
         $(".dealer-points").html("Dealer:  " + dealer_points + " puntos");
         get_ganador(player_points, dealer_points);
@@ -173,6 +202,8 @@ function get_ganador(player_points, dealer_points) {
             $(".message-label").html("Gana el Dealer!!");
             $(".message-player").html("Jugador: " + player_points + " puntos");
             $(".message-dealer").html("Dealer: " + dealer_points + " puntos");
+        } else if(dealer_play > 0){
+            get_card_dealer(deck_id, 2);
         }
     });
 }
